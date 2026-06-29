@@ -3,8 +3,8 @@
 # Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="vdr-plugin-restfulapi"
-PKG_VERSION="92762bb5a9d9c7df7ab832aab0737fa12d9805c9"
-PKG_SHA256="5992e3d5a2b14b18c0bb5493d791e8f5bba0adb7eb31bba3f930b7dd48478969"
+PKG_VERSION="3f74822e2230ef6deb791660642fa20e15951e22"
+PKG_SHA256="5a86748eb95b1efbc84ffc0c7d75be062440fcee92a39f7b06c34510467f0653"
 PKG_LICENSE="GPL-2.0-only"
 PKG_SITE="https://github.com/yavdr/vdr-plugin-restfulapi"
 PKG_URL="https://github.com/yavdr/${PKG_NAME}/archive/${PKG_VERSION}.tar.gz"
@@ -22,11 +22,15 @@ make_target() {
   export PKG_CONFIG_PATH=${VDR_DIR}:${PKG_CONFIG_PATH}
   export CPLUS_INCLUDE_PATH=${VDR_DIR}/include
 
+  local RESTFULAPI_PATH="/storage/.kodi/addons/service.multimedia.vdr-addon/res/plugins/restfulapi"
+  CXXFLAGS+=" -DDOCUMENT_ROOT=\\\"${RESTFULAPI_PATH}/\\\" -DWEBAPP_DIR=\\\"${RESTFULAPI_PATH}\\\""
+
   make \
     LIBDIR="." \
     LOCDIR="./locale" \
     all install-i18n \
-    USE_LIBMAGICKPLUSPLUS=0
+    USE_LIBMAGICKPLUSPLUS=0 \
+    CXXFLAGS="$(pkg-config --cflags vdr) ${CXXFLAGS}"
 }
 
 post_make_target() {
